@@ -1,4 +1,5 @@
 import sys
+import time
 import logging
 from jaeger_client import Config
 
@@ -35,3 +36,6 @@ assert len(sys.argv) == 2
 
 hello_to = sys.argv[1]
 say_hello(hello_to)
+
+time.sleep(2)
+tracer.close()
