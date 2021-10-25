@@ -54,21 +54,29 @@ def hello_world():
 
 @app.route('/alpha')
 def alpha():
-    for i in range(100):
-        do_heavy_work()  # removed the colon here since it caused a syntax error - not sure about its purpose?
-        if i % 100 == 99:
-            time.sleep(10)
-    return 'This is the Alpha Endpoint!'
+    with tracer.start_span('alpha') as span:
+        span.set_tag('http.method', 'GET')
+        span.set_tag('http.url', '/alpha')
+
+        for i in range(100):
+            do_heavy_work()  # removed the colon here since it caused a syntax error - not sure about its purpose?
+            if i % 100 == 99:
+                time.sleep(10)
+
+        return 'This is the Alpha Endpoint!'
 
 
 @app.route('/beta')
 def beta():
-    r = requests.get("https://www.google.com/search?q=python")
-    dict = {}
-    for key, value in r.headers.items():
-        print(key, ":", value)
-        dict.update({key: value})
-    return jsonify(dict)
+    with tracer.start_span('beta') as span:
+        span.set_tag('http.method', 'GET')
+        span.set_tag('http.url', '/beta')
+        r = requests.get("https://www.google.com/search?q=python")
+        dict = {}
+        for key, value in r.headers.items():
+            print(key, ":", value)
+            dict.update({key: value})
+        return jsonify(dict)
 
 
 # needed to rename this view to avoid function name collision with redis import
