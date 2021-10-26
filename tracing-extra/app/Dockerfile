@@ -8,6 +8,7 @@ WORKDIR $APP_HOME
 COPY . ./
 
 # Install production dependencies.
+RUN pip install requests redis_opentracing
 RUN pip install -r requirements.txt
 
 # Run the web service on container startup. Here we use the gunicorn
