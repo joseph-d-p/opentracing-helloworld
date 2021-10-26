@@ -39,6 +39,8 @@ def init_tracer(service):
 
 # starter code
 tracer = init_tracer('test-service')
+tracing = FlaskTracing(tracer, True, app)
+
 
 # not entirely sure but I believe there's a flask_opentracing.init_tracing() missing here
 redis_opentracing.init_tracing(tracer, trace_all_classes=False)
@@ -48,11 +50,13 @@ with tracer.start_span('first-span') as span:
 
 
 @app.route('/')
+@tracing.trace()
 def hello_world():
     return 'Hello World!'
 
 
 @app.route('/alpha')
+@tracing.trace()
 def alpha():
     with tracer.start_span('alpha') as span:
         span.set_tag('http.method', 'GET')
@@ -67,6 +71,7 @@ def alpha():
 
 
 @app.route('/beta')
+@tracing.trace()
 def beta():
     with tracer.start_span('beta') as span:
         span.set_tag('http.method', 'GET')
