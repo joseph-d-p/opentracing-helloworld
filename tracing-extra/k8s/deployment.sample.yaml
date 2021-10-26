@@ -17,7 +17,8 @@ spec:
     spec:
       containers:
       - name: hello-app
-        image: josephdp/app-tracing-extra:0.0.1
+        image: josephdp/app-tracing-extra:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 8080
         env:
